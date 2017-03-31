@@ -5,25 +5,42 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
 
 
+def getDbSession():
+    engine = create_engine("sqlite:///restaurantmenu.db")
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    # cursor = session.cursor()
+    return session
+
+
+def closeSession(commit=True):
+    if commit:
+        session.commit()
+    else:
+        session.rollback()
+    session.close()
+
+
 class webserverHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            if self.path.endswith('/hello'):
+            if self.path.endswith('/restaurants'):
                 self.send_response(200)
                 self.send_header('content-type', 'text/html')
                 self.end_headers()
+
+                session = getDbSession()
+                restaurants = session.query(Restaurant.name).all()
+                restaurant_list = ""
+                for restaurant in restaurants:
+                    restaurant_list += "<h3>%s</h3>" % restaurant
                 output = ""
                 output += "<html><body>"
                 output += """
-                            Hello There!!!
+                            <h1>List of Restaurants</h1>
                           """    
-                output += """
-                          <form method="POST" enctype="multipart/form-data" action="/hello">
-                                <h2> What would you like me to say? </h2>
-                                <input name="message" type="text" >
-                                <input type="submit" value="Okay">
-                          </form>
-                          """
+                output += restaurant_list
                 output += "</body></html>"
 
                 self.wfile.write(output)
