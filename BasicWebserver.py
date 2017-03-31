@@ -14,7 +14,7 @@ def getDbSession():
     return session
 
 
-def closeSession(commit=True):
+def closeSession(session, commit=True):
     if commit:
         session.commit()
     else:
@@ -43,23 +43,23 @@ class webserverHandler(BaseHTTPRequestHandler):
                 output += restaurant_list
                 output += "</body></html>"
 
+                closeSession(session, commit=False)
                 self.wfile.write(output)
                 return
 
-            if self.path.endswith('/hola'):
+            if self.path.endswith('/restaurants/new'):
                 self.send_response(200)
                 self.send_header('content-type', 'text/html')
                 self.end_headers()
+
                 output = ""
                 output = "<html><body>"
+                output += "<h2>Add the new Restaurant</h2>"    
                 output += """
-                            Hola amigos!!! <a href="/hello"> back to hello</a>
-                          """    
-                output += """
-                          <form method="POST" enctype="multipart/form-data" action="/hello">
-                                <h2> What would you like me to say? </h2>
-                                <input name="message" type="text" >
-                                <input type="submit" value="Okay">
+                          <form method="POST" enctype="multipart/form-data" action="/restaurants">
+                                <h2> Enter the Restaurant Name: </h2>
+                                <input name="restaurant_name" type="text" >
+                                <input type="submit" value="Create">
                           </form>
                           """
                 output += "</body></html>"
