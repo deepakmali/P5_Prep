@@ -34,7 +34,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                 restaurants = session.query(Restaurant.name).all()
                 restaurant_list = ""
                 for restaurant in restaurants:
-                    restaurant_list += "<h3>%s</h3>" % restaurant
+                    restaurant_list += "<h3>%s</h3> <a href="">Edit</a><br><a href="">Delete</a>" % restaurant
                 output = ""
                 output += "<html><body>"
                 output += """
