@@ -1,0 +1,25 @@
+<html>
+
+<body>
+
+<h1>{{restaurant.name}}</h1>
+
+
+{% for i in items %}
+
+<div>
+
+<p>{{i.name}}</p>
+
+<p>{{i.description}}</p>
+
+<p> {{i.price}} </p>
+<a href="{{ url_for('edit') }}">Edit</a> <br>
+<a href="{{ url_for('delete') }}">Delete</a>
+</div>
+
+
+{% endfor %}
+</body>
+
+</html>
